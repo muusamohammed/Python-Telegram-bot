@@ -15,7 +15,7 @@ def send_welcome(message):
     btn_web = types.InlineKeyboardButton("🌐 وێبسایتێ من", url="https://muusamohammed.github.io/kurdish-dev-hub/")
     btn_github = types.InlineKeyboardButton("📁 GitHub یێ من", url="https://github.com/muusamohammed")
     btn_about = types.InlineKeyboardButton("👨‍💻 دەربارەی نووح", callback_data="about_noah")
-    btn_contact = types.InlineKeyboardButton("💬 پەیوەندی", callback_data="contact_me")
+    btn_contact = types.InlineKeyboardButton("💬 پەیوەندی", callback_data="+964 750 251 0003")
     
     markup.add(btn_web, btn_github, btn_about, btn_contact)
     
