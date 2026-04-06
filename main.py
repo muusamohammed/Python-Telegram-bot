@@ -1,49 +1,47 @@
 import telebot
 from telebot import types
 
-# زانیارییێن تە یێن فەرمی
-API_TOKEN = '8644773541:AAEk0_C9uZQkxYyM6Fmg1vE1WFK80k6cbiU'
-MY_ID = '7894920188'
+# توکنێ تە یێ نوو
+API_TOKEN = '8736556946:AAHvSvyt6mH8V0LkVNgQ5SEQdD0RYk0dhjc'
 
 bot = telebot.TeleBot(API_TOKEN)
 
-# دروستکرنا مێنیویا دوگمەیان
-def main_menu():
-    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    btn1 = types.KeyboardButton('🐍 وانەیێن پایتۆن')
-    btn2 = types.KeyboardButton('🌐 وێبسایتا من')
-    btn3 = types.KeyboardButton('👨‍💻 دەربارەی نووح')
-    btn4 = types.KeyboardButton('📁 پڕۆژەیێن گێت هەب')
-    markup.add(btn1, btn2, btn3, btn4)
-    return markup
-
-# فەرمانا دەستپێکێ /start
+# فەرمانا /start
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    welcome_text = (
-        f"سلاڤ ل تە بیت {message.from_user.first_name} 👋\n\n"
+    # دروستکرنا دوگمەیێن بن نامەیێ (Inline Keyboard)
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    
+    btn_web = types.InlineKeyboardButton("🌐 وێبسایتێ من", url="https://muusamohammed.github.io/kurdish-dev-hub/")
+    btn_github = types.InlineKeyboardButton("📁 GitHub یێ من", url="https://github.com/muusamohammed")
+    btn_about = types.InlineKeyboardButton("👨‍💻 دەربارەی نووح", callback_data="about_noah")
+    btn_contact = types.InlineKeyboardButton("💬 پەیوەندی", callback_data="contact_me")
+    
+    markup.add(btn_web, btn_github, btn_about, btn_contact)
+    
+    welcome_msg = (
+        f"سلاڤ {message.from_user.first_name} 👋\n\n"
         "بخێر بێی بۆ بۆتێ فەرمی یێ **Cyber Noah**.\n"
-        "ئەز یێ ل ڤێرەم دا تە فێری کۆدینگ و پایتۆن بکەم ب زمانێ کوردی."
+        "ئەز یێ ل ڤێرەم دا تە بەرەڤ جیهانا پرۆگرامینگێ بەم."
     )
-    bot.send_message(message.chat.id, welcome_text, reply_markup=main_menu())
+    
+    bot.send_message(message.chat.id, welcome_msg, reply_markup=markup, parse_mode="Markdown")
 
-# بەرسڤدان بۆ دوگمەیان
-@bot.message_handler(func=lambda message: True)
-def handle_messages(message):
-    if message.text == '🐍 وانەیێن پایتۆن':
-        bot.reply_to(message, "کۆرسێ مە یێ پایتۆن ژ ١٨ وانەیان پێکدهێت. تو دشێی هەمییان د وێبسایتێ مە دا ببینی.")
-    
-    elif message.text == '🌐 وێبسایتا من':
-        bot.reply_to(message, "فەرموو ئەڤە لینکا وێبسایتێ مە یێ فەرمی یە:\nhttps://muusamohammed.github.io/kurdish-dev-hub/")
-    
-    elif message.text == '👨‍💻 دەربارەی نووح':
-        bot.reply_to(message, "ئەز نووح م، گەنجەکێ ١٨ ساڵیم ژ کوردستانێ. ئارمانجا من پێشخستنا جڤاکێ کوردی یە د بوارێ تەکنۆلۆژیایێ دا.")
+# بەرسڤدان دەما کلیک ل سەر دوگمەیان دکەی (Callback Query)
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    if call.data == "about_noah":
+        bot.answer_callback_query(call.id)
+        bot.send_message(call.message.chat.id, "نووح گەنجەکێ ١٨ ساڵە ژ کوردستانێ، ئارمانجا وی ئەوە زانستێ تەکنۆلۆژیایێ ب زمانێ کوردی بەلاڤ بکەت.")
         
-    elif message.text == '📁 پڕۆژەیێن گێت هەب':
-        bot.reply_to(message, "تەماشەی کۆدێن من بکە ل سەر GitHub:\nhttps://github.com/muusamohammed")
-    
-    else:
-        bot.reply_to(message, "تکایە ئێک ژ دوگمەیێن خوارێ هەلبژێرە دا هاریکاریا تە بکەم.")
+    elif call.data == "contact_me":
+        bot.answer_callback_query(call.id)
+        bot.send_message(call.message.chat.id, "بۆ هەر پرسیارەکێ دشێی ل سەر تیکتۆک یان دیسکۆردێ @cyber.noah پەیوەندیێ بکەی.")
 
-print("بۆتێ نووح نوکە یێ کار دکەت...")
+# بەرسڤدانا نامەیێن ئاسایی
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    bot.reply_to(message, "تکایە دوگمەیێن ل سەرێ بکاربینە دا مفا ژ خزمەتێن مە وەربگری.")
+
+print("Cyber Noah Bot is Running...")
 bot.infinity_polling()
